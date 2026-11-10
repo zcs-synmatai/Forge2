@@ -1,0 +1,26 @@
+:root {
+  --bg: #f6f5fa;
+  --frame: #fcfbfe;
+  --paper: #ffffff;
+  --raised: #f8f7fc;
+  --active: #f1edff;
+  --ink: #243044;
+  --muted: #5e6b7d;
+  --faint: #6b7280;
+  --line: #e9e6f1;
+  --rule: #f0eef5;
+  --control: #d7d3e3;
+  --brand: #5f36fc;
+  --brand-soft: #f1edff;
+  --green: #247b50;
+  --green-bg: #e9f7ef;
+  --amber: #8a5b15;
+  --amber-bg: #fff6df;
+  --red: #b4232b;
+  --red-bg: #ffedee;
+  --blue: #3166a6;
+  --blue-bg: #eaf2ff;
+  --radius: 12px;
+  --radius-control: 6px;
+  --font: "Segoe UI", "Microsoft YaHei", sans-serif;
+}

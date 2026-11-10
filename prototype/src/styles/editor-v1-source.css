@@ -1,0 +1,15 @@
+/* Frozen V1 workflow editor styles. */
+@import url('./editor-v1/synmatai/base.css');
+@import url('./editor-v1/synmatai/workflow.css');
+@import url('./editor-v1/synmatai/layout.css');
+@import url('./editor-v1/synmatai/copilot.css');
+@import url('./editor-v1/synmatai/project-navigation.css');
+@import url('./editor-v1/synmatai/brand-theme.css');
+@import url('./editor-v1/synmatai/workbench.css');
+@import url('./editor-v1/synmatai/research-flow.css');
+@import url('./editor-v1/synmatai/task-canvas.css');
+@import url('./editor-v1/editor.css');
+@import url('./editor-v1/editor-canvas.css');
+@import url('./editor-v1/molecule.css');
+.version-notice{display:flex;align-items:center;gap:12px;padding:8px 20px;background:#f1edff;border-bottom:1px solid #e3dbfb;color:#776394;font-size:11px}
+.version-notice strong{color:#5f36fc}.version-notice button{margin-left:auto}

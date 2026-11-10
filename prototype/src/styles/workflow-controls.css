@@ -1,0 +1,57 @@
+/* Current workbench controls: shared baselines and a single zoom control group. */
+.editor-page .dependency-panel>.section-heading{
+  display:flex;align-items:center;justify-content:space-between;
+  min-height:64px;box-sizing:border-box;padding:12px 16px;gap:12px;
+}
+.editor-page .dependency-panel>.section-heading h2{
+  display:flex;align-items:baseline;gap:10px;margin:0;line-height:24px;
+}
+.editor-page .dependency-panel>.section-heading h2 span{margin:0;white-space:nowrap;font-weight:400}
+.editor-page .workflow-heading-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
+.editor-page .workflow-heading-actions .btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  height:36px;min-height:36px;padding:0 12px;margin:0;
+  font-size:13px;line-height:20px;border-radius:6px;white-space:nowrap;
+}
+.editor-page .workflow-heading-actions .btn svg{width:16px;height:16px;flex:none;vertical-align:middle}
+.editor-page .dependency-panel>.pipeline-footer{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin:0 16px;padding:8px 0;min-height:48px;box-sizing:border-box;
+  border-top:1px solid #e6e9f1;
+}
+.editor-page .dependency-panel>.pipeline-footer>span{font-size:12px;line-height:20px;color:#64748b}
+.editor-page .pipeline-footer .graph-tools{margin-left:auto;display:flex;align-items:center}
+.editor-page .pipeline-footer .graph-tools .btn{height:30px;min-height:30px;padding:0 10px;font-size:12px;line-height:20px}
+.editor-page .editor-infinite-surface .fc-commandbar{
+  bottom:12px;display:flex;align-items:center;gap:4px;padding:5px 6px;
+  height:44px;box-sizing:border-box;border-radius:9px;
+}
+.editor-page .editor-infinite-surface .fc-commandbar>button{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:32px;height:32px;min-height:32px;padding:0;margin:0;border-radius:6px;
+}
+.editor-page .editor-infinite-surface .fc-commandbar svg{width:18px;height:18px}
+.editor-page .editor-infinite-surface .fc-command-divider{height:20px;margin:0 3px;align-self:center}
+.editor-page .editor-infinite-surface .fc-zoom-controls{
+  display:flex;align-items:center;gap:3px;min-height:44px;padding:5px 6px;box-sizing:border-box;border-radius:9px;
+}
+.editor-page .editor-infinite-surface .fc-zoom-controls button{
+  display:inline-flex;align-items:center;justify-content:center;
+  height:32px;min-height:32px;padding:0 8px;margin:0;font-size:11px;line-height:18px;border-radius:5px;
+}
+.editor-page .editor-infinite-surface .fc-zoom-controls [data-fc-zoom]{width:26px;padding:0}
+.editor-page .fc-selection-bar{align-items:center;padding:5px 8px;min-height:40px;box-sizing:border-box;gap:4px}
+.editor-page .fc-selection-bar>span{font-size:11px;line-height:20px;padding:0 6px}
+.editor-page .fc-selection-bar>button{display:inline-flex;align-items:center;justify-content:center;min-height:28px;padding:0 8px;line-height:20px;margin:0;border-radius:4px}
+.editor-page .fc-selection-bar>[data-clear-selection]{width:28px;padding:0}
+@media(max-width:1100px){
+  .editor-page .editor-infinite-surface .fc-commandbar{bottom:68px}
+}
+@media(max-width:740px){
+  .editor-page .dependency-panel>.section-heading{align-items:flex-start;padding:12px 10px;gap:10px}
+  .editor-page .workflow-heading-actions{width:100%;margin-left:0;justify-content:flex-end;flex-wrap:wrap}
+  .editor-page .dependency-panel>.pipeline-footer{margin:0 10px}
+  .editor-page .dependency-panel>.pipeline-footer>span{flex:1;min-width:150px}
+  .editor-page .editor-infinite-surface .fc-zoom-controls{gap:0;padding:4px}
+  .editor-page .editor-infinite-surface .fc-zoom-controls button{padding:0 5px}
+}

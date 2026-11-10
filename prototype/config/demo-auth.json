@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "platformName": "材料研发平台",
+  "sessionHours": 8,
+  "sessionVersion": "2026-11-10-v1",
+  "users": [
+    {
+      "username": "demo",
+      "password": "SynMatAI2026!",
+      "displayName": "演示用户"
+    }
+  ]
+}

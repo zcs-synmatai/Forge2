@@ -1,0 +1,130 @@
+/* Current workbench only; the archived V1 keeps its original layout. */
+.editor-page .editor-run-strip:empty{display:none}
+.editor-page .task-header{padding-top:12px;padding-bottom:12px;gap:16px}
+.editor-page #editor-header-context{display:flex;align-items:center;gap:10px;white-space:nowrap}
+.editor-page .header-task-state{font-size:12px;color:#62738b}
+.editor-page .editor-title .workflow-remark{display:block;field-sizing:content;width:auto;max-width:min(560px,38vw);min-width:180px;margin:3px 0 0;padding:3px 0;font:inherit;font-size:12px;line-height:20px;color:#63748d;background:transparent;border:0;border-radius:0;text-overflow:ellipsis;box-shadow:none}
+.editor-page .editor-title .workflow-remark:hover:not([readonly]){box-shadow:inset 0 -1px #cbd3df}
+.editor-page .editor-title .workflow-remark:focus:not([readonly]){outline:none;box-shadow:inset 0 -1.5px #9273c5;color:#344d69}
+.editor-page .editor-title .workflow-remark::placeholder{color:#8390a3}
+.editor-page .editor-title h1.workflow-heading-name{display:flex;align-items:baseline;gap:4px;min-width:0}
+.editor-page .workflow-algorithm-label{white-space:nowrap;flex:none}
+.editor-page .editor-title h1.workflow-heading-name input{field-sizing:content;width:auto;max-width:min(360px,30vw);min-width:4ch;flex:0 1 auto;padding:2px 0;border:0;border-radius:0;outline:none;background:transparent;box-shadow:none}
+.editor-page .editor-title h1.workflow-heading-name input:hover:not([readonly]){box-shadow:inset 0 -1px #cbd3df}
+.editor-page .editor-title h1.workflow-heading-name input:focus:not([readonly]){outline:none;box-shadow:inset 0 -1.5px #9273c5}
+.editor-page .model-flow-split{--model-width:55%;display:grid;grid-template-columns:minmax(0,var(--model-width)) 12px minmax(0,1fr);align-items:stretch;min-width:0;height:clamp(520px,calc(100dvh - 184px),780px)}
+.editor-page .model-flow-split>.detail-panel,.editor-page .model-flow-split>.dependency-panel{margin:0;min-width:0;overflow:hidden;display:flex;flex-direction:column}
+.editor-page .workspace-splitter{display:flex;align-items:center;justify-content:center;cursor:col-resize;touch-action:none;outline-offset:-3px}
+.editor-page .workspace-splitter span{width:3px;height:42px;border-radius:3px;background:#c5cedd;transition:background .15s}
+.editor-page .workspace-splitter:focus-visible{outline:2px solid #7953d6;border-radius:5px}
+.editor-page .workspace-splitter:hover span,.editor-page .workspace-splitter:focus span,.editor-page .is-resizing .workspace-splitter span{background:#7953d6}
+.editor-page .is-resizing{user-select:none}
+.editor-page .model-flow-split #editor-detail-body{display:flex;flex-direction:column;flex:1;min-height:0}
+.editor-page .model-flow-split .thermal-layout{display:flex;flex:1;min-height:0;height:auto;max-height:none}
+.editor-page .model-flow-split .thermal-preview{width:100%;min-width:0;margin:8px;min-height:0;display:flex;flex-direction:column}
+.editor-page .model-flow-split #editor-preview{flex:1;min-height:0;height:auto;display:flex;flex-direction:column}
+.editor-page .model-flow-split #editor-preview .composite-canvas-wrap{flex:1;min-height:180px;height:auto}
+.editor-page .model-flow-split>.dependency-panel{container-type:inline-size}
+.editor-page .model-flow-split .macro-tools{flex-wrap:wrap;gap:4px;padding:7px 10px;min-height:44px}
+.editor-page .model-flow-split .macro-tools button{padding:5px 6px}
+.editor-page .model-flow-split .model-tool-dock{flex-wrap:wrap;gap:4px}
+.editor-page .model-flow-split .detail-heading{padding:12px 14px;gap:8px;min-height:54px}
+.editor-page .macro-compact-heading h2{display:flex;align-items:center;gap:9px;margin:0;min-width:0}
+.editor-page .detail-actions:empty{display:none}
+.editor-page .model-flow-split .section-heading h2{flex-wrap:wrap;gap:8px}
+.editor-page .inspection-badge{display:inline-flex;align-items:center;font-size:11px!important;line-height:22px!important;font-weight:500!important;white-space:nowrap;border-radius:4px;padding:0 7px;margin:0!important;background:#f0f3f7;color:#758295}
+.editor-page .inspection-badge[data-state=已检验]{color:#2d7f67;background:#edf6f1}
+.editor-page .inspection-badge[data-state=需处理]{color:#a06b27;background:#fbf1e2}
+.editor-page .model-flow-split .detail-actions .ready-label{font-size:11px}
+.editor-page .model-flow-split .detail-actions [data-editor=run-node],.editor-page .model-flow-split .detail-actions [data-editor=ai-edit],.editor-page .model-flow-split .detail-actions [data-editor=delete]{display:none}
+.editor-page .model-flow-split .section-heading{padding:12px;flex-wrap:wrap;gap:8px;min-height:54px;align-content:center}
+.editor-page .model-flow-split .section-heading h2{font-size:16px;white-space:nowrap}
+.editor-page .model-flow-split .workflow-heading-actions{gap:5px;flex-wrap:wrap}
+.editor-page .model-flow-split .workflow-heading-actions .btn{padding:6px 8px;min-height:32px;font-size:12px}
+.editor-page .model-flow-split .editor-infinite-surface{height:auto;min-height:0;flex:1;margin:0 8px 8px}
+.editor-page .model-flow-split .pipeline-footer{padding:7px 10px;font-size:11px;gap:5px}
+.editor-page .model-flow-split .editor-validation{margin-top:auto}
+.model-settings-dialog{width:min(620px,calc(100vw - 32px))}
+.model-settings-form .model-settings-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+.model-settings-fields .algorithm-field-group,.model-settings-fields .binding-note,.model-settings-fields h3{grid-column:1/-1}
+.model-settings-fields .algorithm-field-group{border-top:1px solid var(--line);padding:12px 0}
+.model-settings-fields .algorithm-field-group>summary{font-weight:600;cursor:pointer;margin-bottom:12px}
+.model-settings-fields .algorithm-field-group>div{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+.model-settings-fields .algorithm-note,.model-settings-fields .algorithm-distribution{grid-column:1/-1;font-size:12px;color:#62738b;line-height:1.7;margin:0}
+.model-settings-fields [hidden]{display:none!important}
+.model-settings-fields .field{margin:0;min-width:0}
+.model-settings-fields .field>span{display:block;font-size:13px;margin-bottom:6px;color:#3c526f}
+.model-settings-fields .unit-input{display:flex;align-items:center;gap:6px}
+.model-settings-fields input,.model-settings-fields select{width:100%;min-width:0}
+.model-settings-fields small{white-space:nowrap;font-size:11px;color:#62738b}
+.model-settings-fields .algorithm-distribution{border:0;padding:0;display:flex;gap:16px}
+.model-settings-fields input[type=radio]{width:auto}
+.editor-page.workflow-fullscreen .model-flow-split{display:flex;flex:1;min-height:0;height:100%}
+.editor-page.workflow-fullscreen .workspace-splitter{display:none}
+.editor-page.workflow-fullscreen .model-flow-split>.dependency-panel{width:100%}
+.editor-page.workflow-fullscreen .model-flow-split .editor-infinite-surface{min-height:0}
+@media(max-width:900px){
+ .editor-page .model-flow-split{display:flex;flex-direction:column;gap:12px;height:auto}
+ .editor-page .workspace-splitter{display:none}
+ .editor-page .header-actions{flex-wrap:wrap;justify-content:flex-end}
+ .editor-page .model-flow-split .thermal-preview{min-height:360px}
+ .editor-page .model-flow-split .editor-infinite-surface{height:460px;flex:auto;min-height:360px}
+}
+@media(max-width:540px){.model-settings-form .model-settings-fields,.model-settings-fields .algorithm-field-group>div{grid-template-columns:1fr}.editor-page #editor-header-context .header-task-state{display:none}}
+@container (max-width:650px){
+ .editor-page .editor-infinite-surface .fc-commandbar{bottom:68px}
+ .editor-page .editor-infinite-surface .fc-zoom-controls{left:8px;right:8px;justify-content:center;flex-wrap:wrap}
+ .editor-page .editor-infinite-surface .fc-minimap{top:12px;bottom:auto;right:12px}
+}
+.editor-page .task-canvas-surface .calculation-canvas-node.calculation-terminal{
+ width:112px;min-width:112px;height:44px;min-height:44px;box-sizing:border-box;
+ padding:8px 18px;border-radius:24px;border:1px solid #c9b8ef;background:#f3edff;
+ display:flex;align-items:center;justify-content:center;gap:0;box-shadow:none;
+}
+.editor-page .calculation-terminal .rf-task-node-top,
+.editor-page .calculation-terminal .tc-work-meta,
+.editor-page .calculation-terminal .rf-task-output,
+.editor-page .calculation-terminal .tc-node-chat,
+.editor-page .calculation-terminal .fc-drag-handle,
+.editor-page .calculation-terminal .tc-task-title svg{display:none}
+.editor-page .calculation-canvas-node.calculation-terminal .tc-task-title{
+ margin:0;padding:0;font-size:14px;line-height:22px;font-weight:600;color:#7654b0;
+ display:block;text-align:center;white-space:nowrap;
+}
+.editor-page .calculation-terminal[data-selected=true]{border-color:#9062e8;background:#ede3ff}
+.editor-page .calculation-terminal .fc-drag-handle{display:block;position:absolute;inset:0;width:100%;height:100%;padding:0;margin:0;opacity:0!important;transform:none;z-index:1;cursor:grab}
+.editor-page .calculation-terminal .fc-port{z-index:2}
+.editor-page .linked-cross-scale-tasks{display:grid;gap:10px;padding:0 16px 16px;max-height:480px;overflow:auto}
+.editor-page .linked-cross-scale-tasks .task-record-title h2{font-size:15px}
+.editor-page .linked-task-actions .task-view-button{width:auto;height:34px;gap:6px;padding:0 12px;font-size:12px;white-space:nowrap}
+.linked-task-snapshot>summary{display:flex;align-items:center;gap:6px;width:max-content;padding:9px 20px;cursor:pointer;list-style:none;color:#647c96;font-size:12px}
+.linked-task-snapshot>summary::-webkit-details-marker{display:none}
+.linked-task-snapshot>summary svg{width:12px;height:12px;transform:rotate(90deg)}
+.linked-task-snapshot[open]>summary svg{transform:rotate(-90deg)}
+.linked-task-snapshot>summary:focus-visible{outline:2px solid #8262c1;outline-offset:-2px}
+.pipe-segment-dialog{width:min(620px,calc(100vw - 32px))}
+.pipe-segment-dialog .macro-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
+.pipe-segment-dialog .macro-fields>.macro-field{margin:6px 0;min-width:0}
+.pipe-segment-dialog .macro-fields>.macro-field input,.pipe-segment-dialog .macro-fields>.macro-field select{min-width:0;width:100%}
+@media(max-width:520px){.pipe-segment-dialog .macro-fields{grid-template-columns:1fr}}
+.material-with-micro{border:1px solid #e0e4ee;border-radius:6px;overflow:hidden;margin-bottom:8px;background:#fff}
+.structure-manager .material-with-micro [data-pick-material]{width:100%;margin:0;border:0;border-radius:0}
+.material-with-micro .material-micro-entry{display:flex;align-items:center;gap:6px;width:100%;padding:8px 10px;border:0;border-top:1px solid #ebe8f2;background:#faf9fd;font-size:12px;color:#7853ad;text-align:left}
+.material-micro-entry svg{width:14px;height:14px;flex:none}
+.material-micro-entry svg:last-child{margin-left:auto;width:12px;height:12px}
+.material-micro-entry:hover{background:#f0eafb}
+.material-micro-entry:focus-visible{outline:2px solid #9273c5;outline-offset:-2px}
+.material-manager-dialog .material-property-row{align-items:start}
+.material-manager-dialog .material-property-row>.macro-field{display:grid;grid-template-rows:20px 40px;align-content:start;gap:8px;margin:14px 0;min-width:0}
+.material-manager-dialog .material-property-row>.macro-field>span{margin:0;line-height:20px}
+.material-manager-dialog .material-property-row>.macro-field>input,
+.material-manager-dialog .material-property-row>.macro-field>select{width:100%;height:40px;min-height:40px;box-sizing:border-box;margin:0}
+.micro-modeling-dialog [hidden]{display:none!important}
+.material-compute-dialog{width:min(620px,calc(100vw - 32px))}
+.material-compute-form h3{font-size:16px;margin:20px 0 14px}
+.material-compute-form .material-calculation-config{max-width:none}
+.material-compute-form [data-computation-properties] input:disabled,.material-compute-form [data-computation-properties] select:disabled{opacity:.75;cursor:default}
+.material-compute-form .dft-settings{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+.material-compute-form .dft-settings>.macro-field{margin:0;min-width:0}
+.material-compute-form>.dialog-actions{position:sticky;bottom:0;background:white;padding:12px 0;margin-bottom:0;border-top:1px solid #eceef3;z-index:2}
+@media(max-width:520px){.material-compute-form .dft-settings{grid-template-columns:1fr}}

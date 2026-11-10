@@ -1,0 +1,27 @@
+/* Local copies of the current calculation workbench, in its effective source order. */
+@import url('./synmatai/base.css');
+@import url('./synmatai/workflow.css');
+@import url('./synmatai/layout.css');
+@import url('./synmatai/copilot.css');
+@import url('./synmatai/project-navigation.css');
+@import url('./synmatai/brand-theme.css');
+@import url('./synmatai/workbench.css');
+@import url('./synmatai/research-flow.css');
+@import url('./synmatai/task-canvas.css');
+@import url('./editor.css');
+@import url('./editor-canvas.css');
+@import url('./molecule.css');
+@import url('./composite-preview.css');
+
+@import url('./workflow-fullscreen.css');
+
+@import url('./macro-tools.css');
+
+@import url("./readability.css");
+
+@import url("./micro-modeling.css");
+@import url("./execution.css");
+@import url("./workflow-controls.css");
+@import url("./unified-model-tools.css");
+@import url("./algorithm-fields.css");
+@import url("./workspace-split.css");

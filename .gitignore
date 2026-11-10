@@ -1,0 +1,8 @@
+memory/
+**/node_modules/
+**/dist/
+**/.taste-skill/
+**/*.log
+prototype/docs/screenshots/
+.env
+.env.*

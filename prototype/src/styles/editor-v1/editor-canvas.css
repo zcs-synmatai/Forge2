@@ -1,0 +1,36 @@
+/* The migrated task canvas is confined to the dependency graph viewport. */
+.editor-page .editor-infinite-surface{position:relative;inset:auto;display:block;height:350px;min-height:350px;max-height:none;margin:0 16px 8px;padding:0;overflow:hidden;isolation:isolate;scrollbar-gutter:auto;--fc-rail-width:0px}
+.editor-page .editor-infinite-surface .fc-toolbar,.editor-page .editor-infinite-surface .calculation-palette{display:none}
+.editor-page .editor-infinite-surface .fc-bottom{display:block;left:12px;bottom:12px;width:max-content;max-width:calc(100% - 24px)}
+.editor-page .editor-infinite-surface .fc-bottom p{display:none}
+.editor-page .editor-infinite-surface .fc-zoom-controls{width:auto;justify-content:flex-start;gap:2px;padding:5px;background:#fffffff5}
+.editor-page .editor-infinite-surface .fc-zoom-controls button{display:block;font-size:10px;min-height:28px;padding:5px 7px}
+.editor-page .editor-infinite-surface .fc-zoom-controls [data-fc-one]{min-width:40px}
+.editor-page .editor-infinite-surface .fc-zoom-controls [data-fc-fit]{background:#f1edff;color:#5f36fc}
+.editor-page .editor-infinite-surface .fc-zoom-controls button:disabled{opacity:.4;cursor:default}
+.editor-page .editor-infinite-surface .fc-commandbar{bottom:64px}
+.editor-page .editor-infinite-surface .fc-minimap{right:12px;bottom:12px;width:110px}
+.editor-page .editor-infinite-surface .fc-minimap svg{height:42px}
+.editor-page .editor-infinite-surface .fc-create-menu{max-height:calc(100% - 24px);overflow:auto}
+.editor-page .editor-infinite-surface .fc-node-tooltip{max-width:min(300px,calc(100% - 24px));overflow:auto}
+.editor-page .task-canvas-surface .calculation-canvas-node{width:196px;min-width:196px;box-shadow:0 2px 6px #30234806}
+.editor-page .task-canvas-surface .calculation-canvas-node .rf-task-node-top small{display:block;font-size:10px}
+.editor-page .calculation-status[data-status="成功"]{color:#39856a}
+.editor-page .calculation-status[data-status="失败"]{color:#ba4859}
+.editor-page .task-canvas-surface .calculation-canvas-node .rf-task-node-top em{font-size:10px;color:#87739c}
+.editor-page .calculation-canvas-node .tc-work-meta{padding-right:25px;gap:7px}
+.editor-page .calculation-canvas-node .tc-work-meta .rf-task-scope{font-size:10px}
+.editor-page .fc-node-chat svg,.editor-page .tc-node-chat svg{fill:none}
+.editor-page .fc-commandbar .fc-command-add{color:white}
+.editor-page .fc-selection-bar{max-width:calc(100% - 20px);gap:6px}
+.editor-page .fc-selection-bar button{font-size:11px}
+.editor-page .fc-node .fc-port{padding:0;min-height:0}
+.editor-page .fc-edge-controls button{padding:0}
+.canvas-context-chips{display:flex;gap:5px;flex-wrap:wrap;margin:7px 0}
+.canvas-context-chips button{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:3px 6px;border:1px solid #e1d8f3;border-radius:5px;background:#f4efff;color:#7955ac;font-size:10px}
+.copilot-composer.is-context-drop-target{outline:2px solid #9874ef;background:#f4efff;box-shadow:0 0 0 4px #5f36fc12}
+.calculation-empty{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);display:grid;gap:12px;pointer-events:none;color:#8e81a3;font-size:13px}
+.calculation-empty>svg{width:32px;height:32px}.calculation-empty strong{font-weight:500}.calculation-empty span{font-size:11px}
+.editor-page .fc-link-popover .fc-connection-file>span{white-space:pre-line;font-size:11px}
+.editor-page .fc-link-popover h3{font-size:12px}.editor-page .fc-node-tooltip>strong{font-size:13px}
+@media(max-width:740px){.editor-page .editor-infinite-surface{margin-left:10px;margin-right:10px}.editor-page .fc-selection-bar{flex-wrap:wrap;white-space:normal}.editor-page .editor-infinite-surface .fc-minimap{display:none}}

@@ -1,0 +1,45 @@
+/* One model-wide action row. Geometry presets live in a single named menu. */
+.editor-page .unified-model-tools{padding:8px 14px;flex-wrap:nowrap;min-width:0;background:#fafbfe;position:relative;z-index:6}
+.editor-page .unified-model-tools .model-tool-dock{
+  display:flex;align-items:center;flex-wrap:nowrap;gap:4px;
+  width:100%;max-width:100%;padding:0;margin:0;min-height:34px;
+  border:0;background:transparent;position:static;
+}
+.editor-page .unified-model-tools .model-tool-dock>button,
+.editor-page .unified-model-tools .model-tool-dock>label,
+.editor-page .unified-model-tools .primitive-toolbar summary{
+  flex:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  height:32px;min-height:32px;margin:0;padding:0 8px;
+  color:#53657c;font-size:12px;line-height:20px;white-space:nowrap;
+}
+.editor-page .unified-model-tools .model-tool-dock>button svg{width:16px;height:16px;flex:none}
+.editor-page .unified-model-tools .model-tool-dock>label{gap:6px;padding:0 4px}
+.editor-page .unified-model-tools select{height:30px;min-height:30px;margin:0;padding:0 7px;font-size:12px;line-height:20px}
+.editor-page .unified-model-tools .primitive-toolbar{flex:none;position:static;width:auto;overflow:visible;max-width:none}
+.editor-page .unified-model-tools .primitive-toolbar details{position:relative}
+.editor-page .unified-model-tools .primitive-toolbar summary{padding:0 8px!important;font-size:12px!important;cursor:pointer;list-style:none}
+.editor-page .unified-model-tools .primitive-toolbar details>div{left:0;right:auto;top:calc(100% + 7px);min-width:150px;z-index:20}
+.editor-page .unified-model-tools .primitive-toolbar details button{justify-content:flex-start;font-size:12px;height:34px;color:#53657c}
+.editor-page .unified-model-tools .model-view-toolbar{position:static;flex:none;flex-wrap:nowrap;gap:2px;width:auto;max-width:none}
+.editor-page .unified-model-tools .model-view-toolbar button{width:30px;min-width:30px;height:32px;min-height:32px;padding:5px}
+.editor-page .unified-model-tools .model-view-toolbar svg{width:17px;height:17px}
+.editor-page .unified-model-tools .model-view-toolbar output{display:none}
+.editor-page .unified-model-tools .macro-tools-divider{flex:none;margin:0 6px;height:18px}
+.editor-page .unified-model-tools button:hover,.editor-page .unified-model-tools summary:hover{background:#edf1f7;color:#415975}
+.editor-page .unified-model-tools button[aria-pressed=true]{background:#eee9fa;border-color:#d9cef0;color:#7350b9}
+.editor-page .unified-model-tools button:disabled{opacity:.45;cursor:default}
+.editor-page .unified-model-tools :focus-visible{outline:2px solid #9274cc;outline-offset:2px}
+@media(max-width:1350px){
+  .editor-page .unified-model-tools{padding:8px 10px}
+  .editor-page .unified-model-tools .model-tool-dock{gap:2px}
+  .editor-page .unified-model-tools .model-tool-dock>button{padding:0 5px}
+  .editor-page .unified-model-tools .model-view-toolbar{gap:0}
+  .editor-page .unified-model-tools .model-view-toolbar>i{margin:0 2px}
+  .editor-page .unified-model-tools .model-view-toolbar button{width:27px;min-width:27px}
+  .editor-page .unified-model-tools .model-tool-dock>label{font-size:0;gap:0}
+}
+@media(max-width:1100px){
+  .editor-page .unified-model-tools{overflow-x:auto;scrollbar-width:thin;padding-bottom:10px}
+  .editor-page .unified-model-tools .model-tool-dock{width:max-content;max-width:none}
+  .editor-page .unified-model-tools .primitive-toolbar details>div{position:fixed;top:auto;left:auto;margin-top:6px}
+}

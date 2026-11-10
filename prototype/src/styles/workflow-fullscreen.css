@@ -1,0 +1,13 @@
+.workflow-heading-actions{display:flex;align-items:center;gap:8px}.workflow-heading-actions .btn{white-space:nowrap}
+body.workflow-fullscreen-active{overflow:hidden}
+.editor-page.workflow-fullscreen{position:fixed;inset:0 0 0 var(--workflow-shell-left,184px);z-index:25;background:#f4f6f9;overflow:hidden}
+.editor-page.workflow-fullscreen>.task-header,.editor-page.workflow-fullscreen>.editor-run-strip{display:none}
+.editor-page.workflow-fullscreen .workbench{height:100dvh;min-height:0;padding:12px;box-sizing:border-box;align-items:stretch}
+.editor-page.workflow-fullscreen .right-workspace{height:100%;min-height:0;min-width:0;display:flex;flex-direction:column;gap:0}
+.editor-page.workflow-fullscreen #editor-detail,.editor-page.workflow-fullscreen .workspace-footer{display:none}
+.editor-page.workflow-fullscreen .dependency-panel{flex:1;min-height:0;display:flex;flex-direction:column;margin:0;overflow:hidden}
+.editor-page.workflow-fullscreen .dependency-panel .section-heading,.editor-page.workflow-fullscreen .graph-description,.editor-page.workflow-fullscreen .pipeline-footer{flex-shrink:0}
+.editor-page.workflow-fullscreen .editor-infinite-surface{flex:1;height:auto;min-height:0;margin-bottom:8px}
+.editor-page.workflow-fullscreen .copilot{position:relative;top:0;height:100%;min-height:0;max-height:none}
+.editor-page.workflow-fullscreen.copilot-is-collapsed .copilot-expand{top:0}
+@media(max-width:740px){.editor-page.workflow-fullscreen .workbench{display:grid;grid-template-columns:220px minmax(0,1fr);gap:8px;padding:8px}.editor-page.workflow-fullscreen.copilot-is-collapsed .workbench{grid-template-columns:38px minmax(0,1fr)}.editor-page.workflow-fullscreen .right-workspace,.editor-page.workflow-fullscreen .copilot{order:initial}.editor-page.workflow-fullscreen.copilot-is-collapsed .copilot-expand{flex-direction:column;align-self:start;min-height:160px;padding:12px 5px}.editor-page.workflow-fullscreen .copilot-expand span{writing-mode:vertical-rl}.editor-page.workflow-fullscreen .workflow-heading-actions{gap:4px}.editor-page.workflow-fullscreen .section-heading{flex-wrap:wrap;gap:8px}.editor-page.workflow-fullscreen .graph-description{font-size:10px}}
