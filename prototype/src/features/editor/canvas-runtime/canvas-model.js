@@ -1,3 +1,4 @@
+import {layeredPositions} from './layered-layout.js';
 /* Migrated from SynMatAI: camera math is independent of calculation definitions. */
 import { FlowDraft } from './draft-model.js';
 export const FlowCanvasModel = (() => {
@@ -7,23 +8,8 @@ export const FlowCanvasModel = (() => {
  function fit(bounds,width,height,padding=64,minimumZoom=.25){const zoom=Math.max(minimumZoom,Math.min((Math.max(1,width)-padding*2)/Math.max(1,bounds.width),(Math.max(1,height)-padding*2)/Math.max(1,bounds.height),1));return {x:width/2-(bounds.x+bounds.width/2)*zoom,y:height/2-(bounds.y+bounds.height/2)*zoom,zoom}}
  function positions(tasks,edges,saved={},sizes={}){const layout=FlowDraft.layout(tasks,edges),result={},rowHeight=Math.max(224,...tasks.map(t=>sizes[t.id]?.height||224));for(const t of tasks){const p=layout.positions[t.id],stored=saved[t.id];result[t.id]=stored&&Number.isFinite(stored.x)&&Number.isFinite(stored.y)?{x:stored.x,y:stored.y}:{x:100+(p.column-1)*300,y:180+((p.rowEnd-p.rowStart>1?(layout.rows-1)/2:p.rowStart-1))*260+(rowHeight-(sizes[t.id]?.height||rowHeight))/2}}return result}
  const edgeKind=edge=>edge[3]||(!edge[2]||['文件输入','产出文件','传递产出物','结果文件'].includes(edge[2])?'dependency':'evidence');
- function forwardPositions(tasks,edges,sizes={}){
-  const layout=FlowDraft.layout(tasks,edges),connected=new Set(edges.flatMap(e=>e.slice(0,2))),groups=new Map(),isolated=[],result={};
-  for(const t of tasks){if(!connected.has(t.id)){isolated.push(t);continue}const rank=layout.positions[t.id].column;if(!groups.has(rank))groups.set(rank,[]);groups.get(rank).push(t)}
-  const ranks=[...groups.keys()].sort((a,b)=>a-b),nodeRank=new Map(tasks.map(t=>[t.id,layout.positions[t.id].column]));
-  // Alternating barycenter sweeps align parallel branches before assigning coordinates.
-  for(let sweep=0;sweep<8;sweep++){
-   const down=sweep%2===0,order=down?ranks:[...ranks].reverse();
-   for(const rank of order){const group=groups.get(rank),stable=new Map(group.map((t,i)=>[t.id,i]));
-    const center=t=>{const neighbors=edges.filter(e=>down?e[1]===t.id:e[0]===t.id).map(e=>down?e[0]:e[1]);const points=neighbors.map(id=>{const peers=groups.get(nodeRank.get(id));return peers?(peers.findIndex(t=>t.id===id)+.5)/peers.length:null}).filter(v=>v!==null);return points.length?points.reduce((a,b)=>a+b,0)/points.length:(stable.get(t.id)+.5)/group.length};
-    const centers=new Map(group.map(t=>[t.id,center(t)]));group.sort((a,b)=>centers.get(a.id)-centers.get(b.id)||stable.get(a.id)-stable.get(b.id));
-   }
-  }
-  const height=t=>sizes[t.id]?.height||150,width=t=>sizes[t.id]?.width||244,colHeight=g=>g.reduce((n,t)=>n+height(t),0)+Math.max(0,g.length-1)*48,maxHeight=Math.max(0,...ranks.map(r=>colHeight(groups.get(r))));let x=100;
-  for(const rank of ranks){const group=groups.get(rank);let y=180+(maxHeight-colHeight(group))/2;for(const t of group){result[t.id]={x,y};y+=height(t)+48}x+=Math.max(...group.map(width))+112}
-  let y=180+maxHeight+(ranks.length?96:0);for(const t of isolated){result[t.id]={x:100,y};y+=height(t)+48}
-  return result;
- }
+ const forwardPositions=layeredPositions;
+
  function bounds(positions,sizes={}){const ids=Object.keys(positions);if(!ids.length)return {x:0,y:0,width:600,height:300};const left=Math.min(...ids.map(id=>positions[id].x))-40,top=Math.min(...ids.map(id=>positions[id].y))-100,right=Math.max(...ids.map(id=>positions[id].x+(sizes[id]?.width||208)))+40,bottom=Math.max(...ids.map(id=>positions[id].y+(sizes[id]?.height||180)))+100;return {x:left,y:top,width:right-left,height:bottom-top}}
  const directions={left:{x:-1,y:0},right:{x:1,y:0},top:{x:0,y:-1},bottom:{x:0,y:1}};
  function port(rect,side){return side==='left'?{x:rect.x,y:rect.y+rect.height/2}:side==='top'?{x:rect.x+rect.width/2,y:rect.y}:side==='bottom'?{x:rect.x+rect.width/2,y:rect.y+rect.height}:{x:rect.x+rect.width,y:rect.y+rect.height/2}}
@@ -32,10 +18,18 @@ export const FlowCanvasModel = (() => {
   const p0=port(from,fromSide),p3=port(to,toSide),a=directions[fromSide]||directions.right,b=directions[toSide]||directions.left,span=Math.hypot(p3.x-p0.x,p3.y-p0.y),bend=Math.max(65,Math.min(evidence?420:240,span*(evidence ? .36 : .45))),p1={x:p0.x+a.x*bend,y:p0.y+a.y*bend},p2={x:p3.x+b.x*bend,y:p3.y+b.y*bend};
   return {d:`M${p0.x},${p0.y} C${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y}`,points:[p0,p1,p2,p3],label:{x:(p0.x+3*p1.x+3*p2.x+p3.x)/8,y:(p0.y+3*p1.y+3*p2.y+p3.y)/8-10}};
  }
+ function forwardCurve(from,to){
+  const base=curve(from,to,'right','left'),a=base.points[0],b=base.points[3],dx=b.x-a.x;
+  if(dx<300||Math.abs(b.y-a.y)<1)return base;
+  // Keep a skipped-layer connection in its own lane until the final merge corridor.
+  const bend=Math.min(100,dx/3),turn={x:b.x-bend*1.6,y:a.y},p1={x:b.x-bend*.6,y:a.y},p2={x:b.x-bend,y:b.y};
+  return {d:`M${a.x},${a.y} L${turn.x},${turn.y} C${p1.x},${p1.y} ${p2.x},${p2.y} ${b.x},${b.y}`,points:[a,turn,p2,b],label:{x:(a.x+turn.x)/2,y:a.y-10}};
+ }
  function bestPorts(from,to,obstacles=[],forward=false){
   const sides=Object.keys(directions),cx=r=>r.x+r.width/2,cy=r=>r.y+r.height/2;
   const dx=cx(to)-cx(from),dy=cy(to)-cy(from);
   const preferred=forward&&to.x>=from.x+from.width?['right','left']:Math.abs(dx)/(from.width+to.width)>=Math.abs(dy)/(from.height+to.height)?[dx>=0?'right':'left',dx>=0?'left':'right']:[dy>=0?'bottom':'top',dy>=0?'top':'bottom'];
+  if(forward&&to.x>=from.x+from.width)return {fromPort:'right',toPort:'left'};
   let best=null;
   for(const a of sides)for(const b of sides){
    if(forward&&(to.y>=from.y+from.height||to.x>=from.x+from.width)&&(!['right','bottom'].includes(a)||!['left','top'].includes(b)))continue;
@@ -69,5 +63,5 @@ export const FlowCanvasModel = (() => {
   return {delta:{x:delta.x+adjust.x,y:delta.y+adjust.y},guides};
  }
  function flowPattern(zoom){const z=clamp(zoom);return {dash:20/z,gap:130/z,offset:-150/z}}
- return {clamp,worldPoint,zoomAt,fit,positions,edgeKind,forwardPositions,bounds,port,nearestPort,curve,bestPorts,selectionBounds,nodesWithin,newNodePosition,snapMove,flowPattern};
+ return {clamp,worldPoint,zoomAt,fit,positions,edgeKind,forwardPositions,bounds,port,nearestPort,curve,forwardCurve,bestPorts,selectionBounds,nodesWithin,newNodePosition,snapMove,flowPattern};
 })();

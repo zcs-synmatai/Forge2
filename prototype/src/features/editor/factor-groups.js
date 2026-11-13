@@ -1,0 +1,16 @@
+import {batchCombinations} from './batch-parameters.js';
+export function factorGroups(s){
+ const byId=new Map(s.nodes.map(n=>[n.id,n])),memo=new Map(),visiting=new Set();
+ const plan=id=>{if(memo.has(id))return memo.get(id);if(visiting.has(id))return [];visiting.add(id);const n=byId.get(id);if(!n)return [];let groups=[{factors:{},values:[]}];
+ const merge=(a,b)=>{const common=Object.keys(a.factors).filter(k=>k in b.factors);if(common.some(k=>a.factors[k]!==b.factors[k]))return null;const values=new Map([...a.values,...b.values].map(v=>[v.nodeId+':'+v.path,v]));return {factors:{...a.factors,...b.factors},values:[...values.values()]};};
+ for(const edge of s.edges.filter(e=>e.to===id)){const upstream=plan(edge.from);if(!upstream.length)continue;groups=groups.flatMap(a=>upstream.map(b=>merge(a,b)).filter(Boolean));const unique=new Map(groups.map(g=>[JSON.stringify(Object.entries(g.factors).sort()),g]));groups=[...unique.values()];if(groups.length>500)throw new Error('下游因子组合超过 500 组，请减少实验数量');}
+ if(n.type==='batch'){const own=batchCombinations(n.params);groups=groups.flatMap(a=>own.map((values,i)=>merge(a,{factors:{[id]:i+1},values})).filter(Boolean));if(groups.length>500)throw new Error('下游因子组合超过 500 组，请减少实验数量');}
+ groups=groups.filter(g=>Object.keys(g.factors).length).map(g=>({...g,key:Object.entries(g.factors).sort(([a],[b])=>a.localeCompare(b)).map(([id,index])=>encodeURIComponent(id)+'='+index).join('&')}));visiting.delete(id);memo.set(id,groups);return groups;};
+ for(const n of s.nodes)plan(n.id);return Object.fromEntries(memo);
+}
+export const groupLabel=g=>g.values.map(v=>v.path.split('.').at(-1)+' = '+v.value).join('；');
+export function groupInput(params,group,nodeId){const input=structuredClone(params);for(const v of group.values.filter(v=>v.nodeId===nodeId)){const keys=v.path.split('.');let target=input;for(const key of keys.slice(0,-1)){if(!target[key]||typeof target[key]!=='object')target[key]={};target=target[key];}target[keys.at(-1)]=v.value;}return input;}
+export function groupSnapshot(s,group){return s.nodes.filter(n=>['micro','microCompute','macro','schedule'].includes(n.type)).map(n=>({nodeId:n.id,params:groupInput(n.params,group,n.id)}));}
+export function childTasks(s,run){const groups=factorGroups(s);for(const n of s.nodes){if(!['microCompute','schedule'].includes(n.type)||!groups[n.id]?.length)continue;const parent=run.tasks[n.id];if(!parent)continue;parent.children??=groups[n.id].map((group,index)=>({id:n.id+'::'+group.key,nodeId:n.id,groupKey:group.key,groupIndex:index+1,group:structuredClone(group),status:'未提交',progress:0,attempts:0,logs:[],input:groupInput(n.params,group,n.id),parameterSnapshot:groupSnapshot(s,group)}));}return groups;}
+
+export function expandedGroupEdges(s,groups){return s.edges.flatMap(edge=>{const expanded=id=>s.expandedFactorNodes?.includes(id)&&['microCompute','schedule'].includes(s.nodes.find(n=>n.id===id)?.type)&&groups[id]?.length;const from=expanded(edge.from)?groups[edge.from]:[null],to=expanded(edge.to)?groups[edge.to]:[null];return from.flatMap(a=>to.filter(b=>!a||!b||Object.keys(a.factors).every(k=>!(k in b.factors)||a.factors[k]===b.factors[k])).map(b=>({edge,fromChild:a?.key,toChild:b?.key})));});}

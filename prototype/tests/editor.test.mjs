@@ -5,7 +5,7 @@ const workflow={id:'wf-test',name:'TIM 测试',type:'TIM 导热',nodeCount:4,def
 test('TIM is a macro case within the same workflow system',()=>{
   const s=createEditor(workflow);
   assert.deepEqual(s.nodes.map(n=>n.type),stages);
-  assert.deepEqual(Object.values(kinds),['开始','微观建模','微观物性计算','宏观建模','计算调度','结果呈现','结束']);
+  assert.deepEqual(Object.values(kinds),['开始','微观建模','微观物性计算','宏观建模','宏观模拟计算','结果呈现','结束','因子设计']);
   assert.equal(s.nodes.find(n=>n.type==='macro').params.case,'tim');assert.equal(s.edges.length,6);
   assert.deepEqual(check(s),[]);assert.ok(canRunNode(s,s.nodes[1]));
 });

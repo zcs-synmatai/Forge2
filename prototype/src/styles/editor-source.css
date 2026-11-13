@@ -25,3 +25,50 @@
 @import url("./unified-model-tools.css");
 @import url("./algorithm-fields.css");
 @import url("./workspace-split.css");
+
+@import url("./panel-windows.css");
+
+@import url("./doe-dialog.css");
+
+/* Expanded factor groups use individual child anchors and a centered stack. */
+.editor-page .factor-node-group{display:flex;flex-direction:column;align-items:center}
+.editor-page .factor-node-group>button{width:auto;max-width:100%;text-align:center;align-self:center}
+.editor-page .factor-node-children{width:100%;box-sizing:border-box;justify-items:center;max-height:none;overflow:visible;padding:3px 8px}
+.editor-page .factor-node-children>button{width:100%;max-width:164px;text-align:center;grid-template-columns:1fr;justify-items:center;position:relative}
+.editor-page .factor-node-children>button small{grid-column:1}.editor-page .factor-node-children>button span{max-width:100%;grid-column:1}
+.editor-page .calculation-canvas-node:has(.factor-node-children)>.fc-port{visibility:hidden}
+
+/* Parameter groups are compact task cards, with numeric values easy to scan. */
+.editor-page .calculation-canvas-node:has(.factor-node-children){background:#fcfcfe;border-color:#dddfe9;box-shadow:0 2px 6px #29334b05}
+.editor-page .factor-node-group{border-top:1px solid #ebeaf1;margin-top:12px;padding-top:8px}
+.editor-page .factor-node-group>button{background:transparent;color:#75628e;font-size:11px;line-height:18px;padding:3px 10px;border-radius:4px;min-height:24px}
+.editor-page .factor-node-group>button:hover{background:#f0edf7;color:#64488c}
+.editor-page .factor-node-children{gap:9px;margin-top:7px;padding:0 2px 4px;width:100%}
+.editor-page .factor-node-children>button{display:block!important;width:100%;max-width:174px;padding:9px 10px!important;background:#fff;border:1px solid #e0e3ec;border-radius:7px;box-shadow:0 2px 4px #29334b04;text-align:left;transition:border-color .15s,background .15s}
+.editor-page .factor-node-children>button:hover{border-color:#bba8d7;background:#fdfbff}
+.editor-page .factor-node-children>button[aria-pressed=true]{border-color:#a383cf;background:#faf7ff;box-shadow:0 2px 5px #7953ad0b}
+.editor-page .factor-node-children .factor-child-heading{display:flex;align-items:center;justify-content:space-between;gap:6px;max-width:none;white-space:normal;overflow:visible;margin-bottom:7px}
+.editor-page .factor-child-heading strong{font-size:11px;line-height:17px;font-weight:600;color:#41516a;letter-spacing:.1px}
+.editor-page .factor-child-heading small{display:inline-flex;align-items:center;gap:4px;font-size:9px;line-height:17px;color:#7b8394;white-space:nowrap}
+.editor-page .factor-child-heading small:before{content:'';width:4px;height:4px;border-radius:50%;background:#b5bbc7;flex:none}
+.editor-page .factor-child-heading small[data-state=已完成]{color:#38816b}.editor-page .factor-child-heading small[data-state=已完成]:before{background:#4e9d7b}.editor-page .factor-child-heading small[data-state=运行中]:before{background:#9b75c9}
+.editor-page .factor-node-children .factor-child-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 8px;max-width:none;overflow:visible;white-space:normal;text-align:left}
+.editor-page .factor-node-children .factor-child-values>span{display:flex;align-items:baseline;gap:4px;grid-column:auto;overflow:hidden;max-width:none;white-space:nowrap;text-overflow:ellipsis;font-size:10px;line-height:15px}
+.editor-page .factor-child-values b{font-weight:400;color:#7b8395;overflow:hidden;text-overflow:ellipsis}.editor-page .factor-child-values em{font-style:normal;font-weight:600;color:#4f5c75;font-variant-numeric:tabular-nums;flex-shrink:0}
+.editor-page .factor-node-children>button:focus-visible{outline:2px solid #9874c9;outline-offset:2px}
+
+.editor-page .fc-group-edges{z-index:6;pointer-events:none}.editor-page .fc-group-edges .fc-edge-hit{pointer-events:stroke}
+
+/* Stretch the group to the parent content width before centering its children. */
+.editor-page .calculation-canvas-node>.factor-node-group{align-self:stretch;width:100%;min-width:0;box-sizing:border-box;margin-left:0;margin-right:0}
+.editor-page .factor-node-group>.factor-node-children{align-self:stretch;width:100%;min-width:0;justify-items:center;box-sizing:border-box;margin-left:0;margin-right:0}
+.editor-page .factor-node-children>button[data-factor-child]{justify-self:center;margin-left:auto;margin-right:auto;box-sizing:border-box}
+
+.workflow-task-table tr.workflow-task-related>td{background:#f3edff;border-top:1px solid #d9c7f2;border-bottom:1px solid #d9c7f2}.workflow-task-table tr.workflow-task-related>td:first-child{box-shadow:inset 3px 0 #9b77cd}.workflow-related-count{font-weight:500;color:#8061a8;margin-left:10px}.workflow-related-tag{display:inline-block;padding:2px 6px;border-radius:4px;background:#e8ddf7;color:#75529f;font-size:11px;margin-top:5px}.workflow-task-table td>small{display:block;max-width:220px;overflow:hidden;text-overflow:ellipsis;font-size:10px;color:#7b899e;margin-top:5px}.workflow-task-steps summary{cursor:pointer;color:#7a5d9f;font-size:12px;white-space:nowrap}.workflow-task-steps>div{min-width:240px;max-width:380px;padding:8px 0}.workflow-task-steps section{padding:10px 0;border-bottom:1px solid #e5e5f0}.workflow-task-steps section>strong{display:block;font-size:12px}.workflow-task-steps section>span{display:block;font-size:11px;color:#7b899e;margin:4px 0}.workflow-task-steps pre{max-height:220px;overflow:auto;white-space:pre-wrap;font-size:11px;background:#f7f8fb;padding:10px}.workflow-task-table td{vertical-align:top}
+
+/* Task details expand across the entire table, without stretching the summary row. */
+.editor-page .workflow-task-table>tbody>tr>td{padding:14px 18px;vertical-align:top}
+.workflow-task-expand{padding:4px 0;background:transparent;border:0;color:#7b5f9e;font-size:12px;white-space:nowrap;cursor:pointer}.workflow-task-expand:hover{color:#623e94}.workflow-task-expand:focus-visible{outline:2px solid #9675c1;outline-offset:3px}
+.editor-page .workflow-task-table>tbody>.workflow-task-detail-row>td{padding:0 18px 16px;background:#fafbfe;border-top:0}.editor-page .workflow-task-table>tbody>.workflow-task-detail-related>td{background:#faf8fe}
+.workflow-computations{border:1px solid #e2e5ef;border-radius:7px;background:#fff;overflow:hidden}.workflow-computations-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:#f5f6fa;border-bottom:1px solid #e6e9f1}.workflow-computations-heading strong{font-size:12px;font-weight:600}.workflow-computations-heading>span{font-size:11px;color:#78859b}
+.workflow-computation{display:grid;grid-template-columns:minmax(180px,1fr) 120px 80px 110px;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid #edf0f5;min-width:0}.workflow-computation:last-child{border-bottom:0}.workflow-computation>strong{font-size:12px;font-weight:500}.workflow-computation-progress{font-size:12px;font-variant-numeric:tabular-nums;color:#68778f}.workflow-computation-log summary{cursor:pointer;color:#80639f;font-size:12px}.workflow-computation-log[open]{grid-column:1/-1;min-width:0}.workflow-computation-log pre{font-size:11px;line-height:1.7;background:#f7f8fb;padding:12px;max-height:260px;overflow:auto;white-space:pre-wrap;margin:8px 0 0;border-radius:5px}.workflow-computation-reason{grid-column:1/-1;font-size:12px;color:#ad5762;margin:0}@media(max-width:760px){.workflow-computation{grid-template-columns:minmax(140px,1fr) 80px 55px 85px;gap:8px}.workflow-computations{min-width:480px}}

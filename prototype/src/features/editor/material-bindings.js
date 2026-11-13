@@ -5,7 +5,8 @@ import {macroMaterials,initializeFillerShapes,modelStructures} from './macro-sta
 import {makeNode,connect,invalidate} from './model.js';
 
 export const materialNames={matrix:'基体材料',filler:'填料材料'};
-const feeds=(s,modelId,macroId)=>s.edges.some(e=>e.from===modelId&&(e.to===macroId||s.edges.some(next=>next.from===e.to&&next.to===macroId)));
+export const microCalculations=(s,id)=>s.nodes.filter(n=>n.type==='microCompute'&&s.edges.some(e=>e.to===n.id&&(e.from===id||s.nodes.some(b=>b.id===e.from&&b.type==='batch'&&s.edges.some(input=>input.from===id&&input.to===b.id)))));
+const feeds=(s,modelId,macroId)=>microCalculations(s,modelId).some(n=>s.edges.some(e=>e.from===n.id&&e.to===macroId));
 export function ensureMaterialNodes(state){
  for(const n of state.nodes.filter(n=>n.type==='macro'))ensureAlgorithmInputs(n);
   let changed=false;
@@ -41,7 +42,7 @@ export function ensureMaterialNodes(state){
       micro.params.materialRef=entry.material?{libraryId:entry.material.libraryId,name:entry.material.name,moleculeId:entry.material.moleculeId}:micro.params.materialRef;
       const oldName=micro.name.replace(' · 微观建模','');const name=entry.name+' · 微观建模';
       if(micro.name!==name){micro.name=name;changed=true;}
-      for(const calc of state.nodes.filter(n=>n.type==='microCompute'&&state.edges.some(e=>e.from===micro.id&&e.to===n.id))){
+      for(const calc of microCalculations(state,micro.id)){
         if(macro.params.materialScope==='whole-model')calc.name=entry.name+' · 材料计算';
         if(entry.propertyConfigs){calc.params.materialProperties=structuredClone(entry.propertyConfigs);calc.params.materialAlgorithm=macro.params.case;calc.params.keyProperty=entry.keyProperty;}
         if(entry.material)calc.params.materialRef={libraryId:entry.material.libraryId,name:entry.material.name,moleculeId:entry.material.moleculeId};
@@ -66,7 +67,7 @@ export function unifyExtrusionMaterial(state,macro){
  return true;
 }
 export function materialForNode(state,id){
-  const modelIds=[id,...state.edges.filter(e=>e.to===id&&state.nodes.find(n=>n.id===e.from)?.type==='micro').map(e=>e.from)];
+  const modelIds=[id,...state.nodes.filter(n=>n.type==='micro'&&microCalculations(state,n.id).some(calc=>calc.id===id)).map(n=>n.id)];
   for(const macro of state.nodes.filter(n=>n.type==='macro'))for(const [material,nodeId]of Object.entries(macro.materialNodes||{}))if(modelIds.includes(nodeId))return {macro,material};
   return null;
 }

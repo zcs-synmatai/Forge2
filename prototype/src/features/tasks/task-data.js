@@ -1,3 +1,5 @@
+import {ensureWorkflowTasks} from '../editor/workflow-tasks.js';
+import {molecularTasks} from '../modeling/molecular-tasks.js';
 import {algorithmName} from '../editor/algorithm-inputs.js';
 export const microTaskExamples=[
  {id:'J00087',name:'环氧树脂 · Tg 计算',status:'失败',property:'Tg',method:'MD',time:'2026-11-10 09:08',duration:'3分12秒',reason:'平衡阶段未收敛，请检查温度范围与平衡设置。',params:{计算链数:5,开始温度:'100 K',结束温度:'600 K',平衡温度:'100 K',帧:200,间隔:1000}},
@@ -11,8 +13,11 @@ export const microTaskExamples=[
 export function taskStatus(value){return value==='成功'?'已完成':value==='未提交'||value==='待校验'?'待运行':value==='等待上游'?'等待上游':value||'待运行';}
 export function collectTasks(workflows,loadEditor){
  const records=microTaskExamples.map(t=>({...t,duration:t.duration||'—',key:'micro:'+t.id,type:'微观模拟',source:'独立微观任务 · 演示',progress:t.status==='已完成'?100:t.progress||0,logs:[`${t.time} · 已提交${t.method}演示任务`,t.reason||'状态及参数为原型演示数据。']}));
+ records.push(...molecularTasks());
  for(const workflow of workflows){let state;try{state=loadEditor(workflow);}catch{continue;}
   for(const run of state.runs||[]){
+   if(run.executionVersion===1){const context={...state,...(run.workingDefinition||run.snapshot||{})},units=ensureWorkflowTasks(context,run);if(units.length>1){for(const unit of units)records.push({key:`workflow:${workflow.id}:${unit.id}`,id:unit.id,name:(run.definitionRef?.name||workflow.name)+' · 任务 '+String(unit.index).padStart(2,'0'),type:'跨尺度模拟',property:algorithmName(run.definitionRef?.algorithm||workflow.type),status:unit.status,time:run.time||'—',duration:'—',progress:unit.progress,workflowId:workflow.id,runId:run.id,workflowTaskId:unit.id,source:'关联建模：'+workflow.name,definitionName:workflow.name,definitionRevision:run.definitionRef?.revision,definitionSnapshot:{group:unit.group,calculations:unit.calculations,parameters:unit.parameterSnapshot},params:{group:unit.group,calculations:unit.calculations,parameters:unit.parameterSnapshot},logs:unit.calculations.flatMap(c=>c.logs||[]),reason:unit.calculations.filter(c=>c.reason).map(c=>c.name+'：'+c.reason).join('；')});continue;}}
+
    records.push({key:`workflow:${workflow.id}:${run.id}`,id:run.id,name:run.definitionRef?.name||run.snapshot?.name||workflow.name,type:'跨尺度模拟',property:algorithmName(run.definitionRef?.algorithm||run.snapshot?.applicationType||workflow.type),definitionName:run.definitionRef?.name||run.snapshot?.name||workflow.name,definitionRevision:run.definitionRef?.revision??run.snapshot?.revision,definitionSnapshot:run.snapshot,status:taskStatus(run.status),time:run.time||'—',duration:'—',progress:run.progress||0,workflowId:workflow.id,runId:run.id,source:'关联建模：'+(run.definitionRef?.name||run.snapshot?.name||workflow.name),params:run.snapshot||{},logs:run.logs||[],reason:run.status==='失败'?run.logs?.at(-1)||workflow.latestRun?.reason||'本次计算失败，请查看日志。':run.status==='已阻塞'?'部分节点阻塞，请进入工作台处理后继续运行。':''});
    for(const node of run.snapshot?.nodes||[]){if(node.type!=='microCompute'||!run.tasks?.[node.id]?.requested)continue;const task=run.tasks[node.id];records.push({key:`node:${workflow.id}:${run.id}:${node.id}`,id:`${run.id} / ${node.id}`,name:node.name,type:'微观模拟',property:'物性计算',status:taskStatus(task.status),method:node.params?.method||'微观计算',time:task.startedAt||run.time||'—',duration:'—',progress:task.progress||0,workflowId:workflow.id,runId:run.id,nodeId:node.id,source:workflow.name,params:task.completedInput||task.input||node.params,logs:task.logs||[],reason:task.reason||''});}
   }

@@ -1,0 +1,26 @@
+/* Scoped operating layout: settings and matrix share one bounded workspace. */
+.app-dialog.batch-parameter-dialog{width:min(1080px,calc(100vw - 40px));max-width:none;max-height:calc(100dvh - 40px);overflow:hidden;padding:0}
+.batch-parameter-dialog .batch-parameter-form{display:flex;flex-direction:column;padding:0;max-height:calc(100dvh - 40px);margin:0}
+.batch-parameter-form .doe-dialog-heading{padding:24px 28px 18px;border-bottom:1px solid #e7e9f1;flex-shrink:0}
+.doe-dialog-heading h2{margin:0 0 8px;font-size:21px;line-height:28px}.doe-dialog-heading .binding-note{margin:0;font-size:13px;line-height:20px;color:#62718a}
+.doe-dialog-body{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);min-height:320px;overflow:auto;align-items:stretch}
+.doe-configuration{min-width:0;padding:22px 24px 24px 28px}.doe-results{min-width:0;padding:22px 24px;background:#f8f9fc;border-left:1px solid #e7e9f1}
+.batch-parameter-form h3{font-size:14px;line-height:22px;margin:0 0 14px;font-weight:600;color:#31435c}.batch-parameter-form .doe-method-heading{margin:24px 0 12px;padding-top:18px;border-top:1px solid #eceef4}
+.batch-parameter-form .batch-parameter-row{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) 42px;gap:10px;margin:0 0 14px}
+.batch-parameter-form .batch-parameter-row>.field{grid-template-rows:20px 40px;gap:6px;font-size:12px;line-height:20px}.batch-parameter-form .batch-parameter-row>.field>span{line-height:20px}
+.batch-parameter-form .batch-parameter-row input,.batch-parameter-form .batch-parameter-row select{height:40px;min-height:40px;padding:8px 10px;font-size:13px;line-height:22px;border-radius:6px}
+.batch-parameter-form .batch-parameter-row>[data-batch-remove]{height:40px;min-height:40px;margin:26px 0 0;padding:0;font-size:12px;border-color:transparent;background:transparent;color:#7e657f}.batch-parameter-form [data-batch-remove]:hover{background:#fff0f2;color:#ae4159}
+.batch-parameter-form [data-batch-add]{min-height:34px;padding:6px 10px;font-size:12px}
+.batch-parameter-form .doe-options{grid-template-columns:1fr 1fr;gap:14px 12px;margin:0 0 16px;align-items:start}
+.batch-parameter-form .doe-options>.field{display:grid;grid-template-rows:20px 40px;gap:6px;margin:0;min-width:0;padding:0;font-size:12px;line-height:20px}.batch-parameter-form .doe-options>.field:first-child{grid-column:1/-1}
+.batch-parameter-form .doe-options>.field>span{margin:0;line-height:20px}.batch-parameter-form .doe-options input,.batch-parameter-form .doe-options select{height:40px;min-height:40px;font-size:13px;padding:8px 10px;box-sizing:border-box;border-radius:6px}
+.batch-parameter-form [hidden]{display:none!important}.batch-parameter-form [data-doe-generate]{height:38px;min-height:38px;font-size:13px}
+.batch-parameter-form .batch-preview{margin:0;padding:0;background:none;border-radius:0}.batch-parameter-form .batch-preview>strong{display:block;font-size:20px;line-height:28px;color:#33415b;margin-bottom:8px}.batch-parameter-form .batch-preview>.binding-note{font-size:12px;line-height:20px;color:#68758b;margin:0 0 16px}
+.batch-parameter-form .doe-table{max-height:360px;overflow:auto;margin:0 0 12px;border:1px solid #e0e5ef;border-radius:6px;background:white;scrollbar-gutter:stable}
+.batch-parameter-form .doe-table table{display:table;width:100%;min-width:100%;border-collapse:collapse;table-layout:auto;font-size:12px;height:auto}
+.batch-parameter-form .doe-table th,.batch-parameter-form .doe-table td{padding:9px 12px!important;height:auto!important;min-height:0;line-height:20px!important;white-space:normal;border-bottom:1px solid #e8ebf2;vertical-align:middle;text-align:right;min-width:70px;font-variant-numeric:tabular-nums}
+.batch-parameter-form .doe-table th{background:#eef1f7;color:#53627c;font-weight:500;max-width:180px;min-width:105px;overflow-wrap:anywhere;position:sticky;top:0;z-index:1}.batch-parameter-form .doe-table th:first-child,.batch-parameter-form .doe-table td:first-child{text-align:left;min-width:42px}
+.batch-parameter-form .doe-table tr:last-child td{border-bottom:0}.batch-parameter-form .batch-preview>small{display:block;font-size:11px;line-height:19px;color:#68758b}
+.batch-parameter-form>.dialog-actions{flex-shrink:0;margin:0;padding:14px 28px;border-top:1px solid #e7e9f1;background:#fff;gap:10px}.batch-parameter-form>.dialog-actions .btn{height:38px;min-height:38px;font-size:13px}.batch-parameter-form .macro-error{margin:10px 0 0;font-size:12px;line-height:20px}.batch-parameter-form .macro-error:empty{display:none}
+@media(max-width:760px){.app-dialog.batch-parameter-dialog{width:calc(100vw - 24px);max-height:calc(100dvh - 24px)}.batch-parameter-dialog .batch-parameter-form{max-height:calc(100dvh - 24px)}.doe-dialog-body{grid-template-columns:1fr}.doe-results{border-left:0;border-top:1px solid #e7e9f1}.doe-configuration,.doe-results{padding:18px 20px}.doe-dialog-heading{padding:20px!important}.batch-parameter-form>.dialog-actions{padding:12px 20px}.batch-parameter-form .doe-table{max-height:240px}}
+@media(max-width:460px){.batch-parameter-form .batch-parameter-row{grid-template-columns:minmax(0,1fr) 42px}.batch-parameter-row>.field:first-child{grid-column:1/-1}.batch-parameter-form .batch-parameter-row>[data-batch-remove]{margin-top:26px}}

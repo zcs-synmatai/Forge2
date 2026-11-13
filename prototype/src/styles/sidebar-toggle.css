@@ -28,3 +28,5 @@
  #sidebar.is-collapsed .demo-submenu{position:absolute;left:calc(100% + 10px);bottom:0;width:190px;padding:8px;background:white;border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 20px #1f294414;z-index:60}
 }
 @media(max-width:740px){#sidebar .sidebar-toggle{display:none}}
+
+#sidebar .recycle-menu [aria-current=page]{background:#f1edff;color:#714ab0}

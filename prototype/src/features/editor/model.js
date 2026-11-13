@@ -1,3 +1,5 @@
+import {factorGroups} from './factor-groups.js';
+import {batchIssues} from './batch-parameters.js';
 import {materialPropertyIssues} from './material-properties.js';
 import {extrusionIssues} from './algorithm-inputs.js';
 import {validatePrimitive} from './primitives.js';
@@ -5,8 +7,9 @@ import {pipeApplication} from './application-models.js';
 import {hasCompositeGeometry,validateMaterials,validateMacroSettings} from './macro-state.js';
 import {createMolecule,validateMolecule} from './molecule.js';
 export const esc = (value = "") => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-export const kinds={start:'开始',micro:'微观建模',microCompute:'微观物性计算',macro:'宏观建模',schedule:'计算调度',result:'结果呈现',end:'结束'};
-export const stages=Object.keys(kinds);
+export const kinds={start:'开始',micro:'微观建模',microCompute:'微观物性计算',macro:'宏观建模',schedule:'宏观模拟计算',result:'结果呈现',end:'结束'};
+kinds.batch='因子设计';
+export const stages=Object.keys(kinds).filter(t=>t!=='batch');
 export function reportConclusion(r){const nodes=r?.snapshot.nodes||[];if(nodes.some(n=>n.type==='flow'||n.params?.case==='flow'))return '简单圆管流动示例已完成，参数与边界见执行快照；未连接真实算法。';if(nodes.some(n=>n.type==='tim'||n.params?.case==='tim'))return 'TIM 内置演示样本：有效热导率 2.46 W/(m·K)，实际填充率 18.7%，仅对应 300 K 基体物性与 Z 向稳态导热工况；不由当前修改参数推算。';return '通用工作流演示完成。模型和调度配置见执行快照，未接入真实算法，不生成物理计算指标。';}
 export const timeNow=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date());
 export function macroParams(caseType='generic'){
@@ -19,16 +22,17 @@ export function macroParams(caseType='generic'){
 }
 export function makeNode(type,id=type){
   if(!kinds[type])throw new Error('未知节点类型：'+type);
-  return {id,type,name:kinds[type],status:'待校验',version:1,x:10+stages.indexOf(type)*235,y:85,params:type==='micro'?{molecule:createMolecule()}:type==='microCompute'?{property:'thermal_conductivity',temperature:300,steps:10000,task:'md-epoxy-021',field:'thermal_conductivity',method:'已有标量结果'}:type==='macro'?macroParams():type==='schedule'?{strategy:'按依赖执行',resource:'本地演示',cores:4,retries:0}:{format:'PDF',presentation:'报告与文本结论'}};
+  return {id,type,name:kinds[type],status:'待校验',version:1,x:10+(type==='batch'?3.5:stages.indexOf(type))*235,y:85,params:type==='batch'?{mode:'product',rows:[]}:type==='micro'?{molecule:createMolecule()}:type==='microCompute'?{property:'thermal_conductivity',temperature:300,steps:10000,task:'md-epoxy-021',field:'thermal_conductivity',method:'已有标量结果'}:type==='macro'?macroParams():type==='schedule'?{strategy:'按依赖执行',resource:'本地演示',cores:4,retries:0}:{format:'PDF',presentation:'报告与文本结论'}};
 }
-export function outputOf(n){return {start:['start','开始','—'],micro:['structure','分子结构','—'],microCompute:['microData','物性计算结果','—'],macro:['model','宏观模型','—'],schedule:['execution','计算结果','—'],result:['artifact','展示与报告','—'],end:['complete','完成','—']}[n.type];}
-export function inputsOf(n){return {start:[],micro:[['start','开始','—']],microCompute:[['structure','分子结构','—']],macro:[['microData','微观模拟数据','—']],schedule:[['model','宏观模型','—']],result:[['execution','计算结果','—']],end:[['artifact','展示与报告','—']]}[n.type]||[];}
+export function outputOf(n){return {batch:['model','批量计算组','—'],start:['start','开始','—'],micro:['structure','分子结构','—'],microCompute:['microData','物性计算结果','—'],macro:['model','宏观模型','—'],schedule:['execution','计算结果','—'],result:['artifact','展示与报告','—'],end:['complete','完成','—']}[n.type];}
+export function inputsOf(n){return {batch:[['model','建模输入','—']],start:[],micro:[['start','开始','—']],microCompute:[['structure','分子结构','—']],macro:[['microData','微观模拟数据','—']],schedule:[['model','宏观模型','—']],result:[['execution','计算结果','—']],end:[['artifact','展示与报告','—']]}[n.type]||[];}
 export function connectionError(a,b){
   if(!a||!b)return '连接节点不存在';
   if(a.id===b.id)return '不能连接节点自身';
-  const next=stages[stages.indexOf(a.type)+1];
-  if(!next)return '结束节点不能连接下游';
-  if(b.type!==next)return kinds[a.type]+'只能连接至'+kinds[next]+'；不支持反向、同阶段或跨阶段连接';
+  const allowed={start:['micro'],micro:['microCompute','batch'],microCompute:['macro'],macro:['schedule','batch'],batch:['microCompute','schedule'],schedule:['result'],result:['end'],end:[]};
+  const targets=allowed[a.type]||[];
+  if(!targets.length)return kinds[a.type]+'不能连接下游';
+  if(!targets.includes(b.type))return kinds[a.type]+'只能连接至'+targets.map(t=>kinds[t]).join('或')+'；不支持反向或无效阶段连接';
   return null;
 }
 export function connect(state,from,to,input){
@@ -65,6 +69,7 @@ export function initializeBlankWorkflow(s){
   return s;
 }
 export function migrateEditor(s){
+  for(const n of s.nodes){if(n.type==='batch'&&n.name==='批量参数设置')n.name=kinds.batch;if(n.type==='schedule'&&n.name==='计算调度')n.name=kinds.schedule;}
   if(s.schemaVersion>=3)return ensureWorkflowTerminals(splitMicroscopicNodes(s));
   s.legacyDefinition??=structuredClone({nodes:s.nodes,edges:s.edges,history:s.history,selected:s.selected,revision:s.revision});
   const old=s.nodes,edges=s.edges;
@@ -88,7 +93,7 @@ export function migrateEditor(s){
   s.selected=retained.some(n=>n.id===s.selected)?s.selected:macros[0]?.id||retained[0]?.id||null;
   s.contextReferences=(s.contextReferences||[]).filter(id=>retained.some(n=>n.id===id));
   s.checkedRevision=null;s.definition='需更新';
-  s.history.unshift({id:s.selected,text:'迁移为微观模拟、宏观建模、计算调度、结果呈现四阶段；原定义与历史快照保留',time:timeNow()});
+  s.history.unshift({id:s.selected,text:'迁移为微观模拟、宏观建模、宏观模拟计算、结果呈现四阶段；原定义与历史快照保留',time:timeNow()});
   return ensureWorkflowTerminals(splitMicroscopicNodes(s));
 }
 export function splitMicroscopicNodes(s){
@@ -129,6 +134,7 @@ export function check(s){
     if(!kinds[n.type]){add(n,'节点类型','不支持的节点类型');continue;}
     for(const input of inputsOf(n))if(!s.edges.some(e=>e.to===n.id&&e.input===input[0]))add(n,input[1],'缺少前一阶段的输入连接');
     const p=n.params;
+    if(n.type==='batch')for(const reason of batchIssues(p,s))add(n,'批量参数',reason);
     if(n.type==='micro'&&p.molecule){const error=validateMolecule(p.molecule);if(error)add(n,'分子结构',error);}
     if(n.type==='microCompute'&&!p.materialProperties&&!p.task)add(n,'微观任务','请选择已有微观模拟任务');
     if(n.type==='microCompute'&&n.status==='等待上游'&&s.viewMode!=='definition'&&s.runs.at(-1)?.executionVersion!==1)add(n,'已有任务','上游微观模拟尚未完成');
@@ -167,6 +173,7 @@ export function check(s){
   const traverse=(ids,reverse=false)=>{const seen=new Set(ids),pending=[...ids];while(pending.length){const id=pending.pop();for(const e of s.edges)if((reverse?e.to:e.from)===id){const next=reverse?e.from:e.to;if(!seen.has(next)){seen.add(next);pending.push(next);}}}return seen;};
   const reachable=traverse(s.nodes.filter(n=>n.type==='start').map(n=>n.id)),finishes=traverse(s.nodes.filter(n=>n.type==='end').map(n=>n.id),true);
   for(const n of s.nodes){if(!reachable.has(n.id))add(n,'开始路径','节点未连接到开始节点');if(!finishes.has(n.id))add(n,'结束路径','节点无法到达结束节点');}
+  try{factorGroups(s);}catch(error){issues.push({nodeId:null,name:'因子设计',field:'组合规模',reason:error.message});}
   try{orderNodes(s);}catch{issues.push({nodeId:null,name:'工作流',field:'依赖',reason:'存在循环或无效依赖'});}
   return issues;
 }

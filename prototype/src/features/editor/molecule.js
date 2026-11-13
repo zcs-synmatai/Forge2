@@ -1,8 +1,12 @@
 export const elements=['C','H','O','N','S','P','F','Cl'];
-export const moleculePresets={butane:'丁烷',ethanol:'乙醇',benzene:'苯'};
+export const moleculePresets={butane:'丁烷',ethanol:'乙醇',benzene:'苯',water:'水',methane:'甲烷',ammonia:'氨'};
 export function createMolecule(preset='butane'){
   const atom=(element,x,y,z)=>({element,x,y,z});let atoms,bonds;
-  if(preset==='ethanol'){
+  if(['water','methane','ammonia'].includes(preset)){
+    if(preset==='water'){atoms=[atom('O',0,0,0),atom('H',-.85,.65,0),atom('H',.85,.65,0)];bonds=[[0,1],[0,2]];}
+    else if(preset==='methane'){atoms=[atom('C',0,0,0),atom('H',1,1,1),atom('H',-1,-1,1),atom('H',-1,1,-1),atom('H',1,-1,-1)];bonds=[[0,1],[0,2],[0,3],[0,4]];}
+    else{atoms=[atom('N',0,.4,0),atom('H',-1,-.4,.3),atom('H',1,-.4,.3),atom('H',0,-.5,-1)];bonds=[[0,1],[0,2],[0,3]];}
+  }else if(preset==='ethanol'){
     atoms=[atom('C',-1.25,0,0),atom('C',0,.65,0),atom('O',1.2,0,.2),atom('H',-2,.7,.1),atom('H',-1.4,-.5,.9),atom('H',-1.35,-.5,-.9),atom('H',0,1.25,.9),atom('H',0,1.25,-.9),atom('H',1.9,.55,.2)];
     bonds=[[0,1],[1,2],[0,3],[0,4],[0,5],[1,6],[1,7],[2,8]];
   }else if(preset==='benzene'){

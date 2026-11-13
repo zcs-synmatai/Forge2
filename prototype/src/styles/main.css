@@ -11,3 +11,21 @@
 @import url("./task-manager.css");
 @import url("./sidebar-toggle.css");
 @import url("./workflow-search.css");
+
+@import url("./modeling-page.css");
+
+.batch-parameter-dialog{width:min(860px,94vw);max-height:90dvh;overflow:auto}.batch-parameter-row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) auto;gap:12px;align-items:end;margin-bottom:14px}.batch-parameter-row .field{margin:0}.batch-preview{margin-top:20px;padding:16px;background:#f6f7fb;border-radius:8px}.batch-preview>p{font-size:12px;line-height:1.7;overflow-wrap:anywhere}@media(max-width:600px){.batch-parameter-row{grid-template-columns:1fr}.batch-parameter-row button{justify-self:end}}
+
+/* Keep batch parameter labels and controls on shared baselines. */
+.batch-parameter-form .batch-parameter-row{align-items:start;margin:18px 0 16px}
+.batch-parameter-form .batch-parameter-row>.field{display:grid;grid-template-rows:22px 44px;gap:8px;min-width:0;margin:0;padding:0;line-height:22px}
+.batch-parameter-form .batch-parameter-row>.field>span{display:block;margin:0;padding:0;line-height:22px}
+.batch-parameter-form .batch-parameter-row input,.batch-parameter-form .batch-parameter-row select{box-sizing:border-box;width:100%;min-width:0;height:44px;min-height:44px;margin:0;padding:10px 12px;line-height:22px}
+.batch-parameter-form .batch-parameter-row>[data-batch-remove]{box-sizing:border-box;height:44px;min-height:44px;margin:30px 0 0;align-self:start}
+@media(max-width:600px){.batch-parameter-form .batch-parameter-row>[data-batch-remove]{margin:0}}
+
+.fc-reconnect-controls{position:absolute;inset:0;pointer-events:none;z-index:15}.fc-reconnect-controls>button{position:absolute;pointer-events:auto;box-sizing:border-box;transform:translate(-50%,-50%) scale(var(--fc-control-scale,1));padding:0;display:grid;place-items:center;background:#fff;color:#8164ad;border:1px solid #d3c3ec;box-shadow:0 2px 5px #36405b12}.fc-reconnect-controls .fc-edge-remove-small{width:22px;height:22px;min-height:0;border-radius:6px;font-size:18px;line-height:1;cursor:pointer}.fc-edge-remove-small:hover{color:#bd4a61;background:#fff5f6}.fc-reconnect-controls .fc-edge-endpoint{width:13px;height:13px;min-height:0;border:2px solid #9b7bce;border-radius:50%;cursor:crosshair;touch-action:none}.fc-edge-endpoint:hover{background:#eadffd}.fc-reconnect-controls>button:focus-visible{outline:2px solid #7650b5;outline-offset:3px}
+
+.doe-options{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin:22px 0 16px}.doe-options .field{display:grid;gap:8px}.doe-options input,.doe-options select{width:100%;min-width:0;height:44px}.doe-table{overflow:auto;max-height:280px;margin:12px 0}.doe-table table{border-collapse:collapse;width:100%;font-size:12px}.doe-table th,.doe-table td{padding:10px;text-align:left;border-bottom:1px solid #e0e4ee;white-space:nowrap}.doe-table th{position:sticky;top:0;background:#f0f1f7}.batch-parameter-dialog{max-width:960px}@media(max-width:650px){.doe-options{grid-template-columns:1fr}}
+
+.editor-page .calculation-canvas-node:has(.factor-node-group){height:auto!important;min-height:126px;overflow:visible}.factor-node-group{position:relative;margin:10px -2px 0;border-top:1px solid #e4dfef;padding-top:6px}.factor-node-group>button{width:100%;background:#f5f1fc;color:#7653aa;text-align:left;font-size:12px;padding:7px 8px;border-radius:5px}.factor-node-children{display:grid;gap:6px;max-height:320px;overflow:auto;margin-top:7px;padding:2px}.factor-node-children>button{display:grid!important;grid-template-columns:1fr auto;gap:4px;text-align:left;border:1px solid #e1d9ee;border-radius:5px;background:#fff;padding:8px!important;color:#46536d;width:100%}.factor-node-children strong{font-size:12px}.factor-node-children small{font-size:10px}.factor-node-children span{grid-column:1/-1;font-size:10px;max-width:175px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.factor-node-children>button[aria-pressed=true]{border-color:#9872cf;background:#f2eafa}.group-task-values{max-width:360px;font-size:12px;overflow-wrap:anywhere}

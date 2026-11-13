@@ -1,0 +1,19 @@
+
+.editor-page .model-flow-split{height:auto;align-items:start}.editor-page .model-flow-split>.detail-panel,.editor-page .model-flow-split>.dependency-panel{position:relative;height:var(--workspace-panel-height,clamp(520px,calc(100dvh - 184px),780px));padding-bottom:10px;box-sizing:border-box}.editor-page .workspace-splitter{align-self:stretch;min-height:58px}.panel-window-actions{display:flex;gap:5px;margin-left:auto;flex-shrink:0}.panel-window-actions .btn{font-size:12px;min-height:30px;padding:5px 8px;white-space:nowrap}.editor-page .model-flow-split .detail-heading,.editor-page .model-flow-split .section-heading{flex-shrink:0;flex-wrap:wrap}.panel-height-resizer{position:absolute;bottom:0;left:0;right:0;height:10px;display:grid;place-items:center;cursor:ns-resize;touch-action:none;background:#fafbfe;border-top:1px solid #edf0f5;z-index:5}.panel-height-resizer span{width:42px;height:3px;border-radius:3px;background:#cad0df}.panel-height-resizer:hover span,.panel-height-resizer:focus-visible span{background:#8d6bc2}.is-panel-resizing{user-select:none;cursor:ns-resize}.editor-page .model-flow-split>.workspace-panel-minimized{height:62px!important;min-height:0;padding-bottom:0}.workspace-panel-minimized>:not(.detail-heading):not(.section-heading){display:none!important}.workspace-panel-minimized .section-heading,.workspace-panel-minimized .detail-heading{height:60px;overflow:auto;flex-wrap:nowrap!important}.workspace-panel-minimized .workflow-heading-actions,.workspace-panel-minimized .detail-actions{display:none!important}.editor-page .model-flow-split>.workspace-panel-fullscreen{position:fixed!important;left:calc(var(--panel-shell-left,184px) + 12px);right:12px;top:70px;bottom:12px;width:auto!important;height:auto!important;max-height:none;z-index:100;background:#fff;box-shadow:0 8px 30px #34415d20}.workspace-panel-fullscreen .panel-height-resizer{display:none}.workspace-panel-fullscreen-active{overflow:hidden}.panel-window-actions button:focus-visible,.panel-height-resizer:focus-visible{outline:2px solid #9874c9;outline-offset:2px}@media(max-width:900px){.editor-page .model-flow-split>.detail-panel,.editor-page .model-flow-split>.dependency-panel{height:var(--workspace-panel-height,620px)}.editor-page .workspace-panel-fullscreen .editor-infinite-surface{height:auto;flex:1}.panel-window-actions{margin-left:auto}}
+
+/* A minimized pane releases its column; retain only a compact restore strip. */
+.editor-page .model-flow-split:has(>.workspace-panel-minimized){display:flex;flex-direction:column;gap:10px;align-items:stretch}
+.editor-page .model-flow-split:has(>.workspace-panel-minimized)>.workspace-splitter{display:none}
+.editor-page .model-flow-split:has(>.workspace-panel-minimized)>.detail-panel,
+.editor-page .model-flow-split:has(>.workspace-panel-minimized)>.dependency-panel{width:100%;min-width:0;flex:none}
+.editor-page .model-flow-split>.workspace-panel-minimized{order:-1;height:48px!important;overflow:hidden}
+.editor-page .model-flow-split>.workspace-panel-minimized>.detail-heading,
+.editor-page .model-flow-split>.workspace-panel-minimized>.section-heading{height:46px;min-height:46px;padding:6px 12px;overflow:hidden;align-items:center;align-content:center}
+.editor-page .workspace-panel-minimized .inspection-badge,
+.editor-page .workspace-panel-minimized #editor-count{display:none}
+.editor-page .workspace-panel-minimized h2{font-size:14px}
+
+.editor-page .dependency-panel .workflow-heading-actions:empty{display:none}
+.editor-page .dependency-panel .panel-window-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-left:auto}
+.editor-page .dependency-panel .panel-window-actions>.btn{height:34px;min-height:34px;padding:6px 10px;font-size:12px;white-space:nowrap}
+.editor-page .workspace-panel-minimized .panel-window-actions>[data-editor=add]{display:none}

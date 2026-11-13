@@ -1,3 +1,7 @@
+import {renderMolecularPage,mountMolecularPage} from './features/modeling/molecular-page.js';
+import {renderModelingPage,deleteMolecularRecord,modelingRecords,localMoleculeRecords,moleculeRecordsKey} from './features/modeling/modeling-page.js';
+import {openMicroModeling} from './features/editor/micro-modeling-dialog.js';
+import {createMolecule} from './features/editor/molecule.js';
 import { getDeletedWorkflowIds, isBuiltinWorkflow, getStoredWorkflows, removeWorkflowById, saveCustomWorkflows, saveDeletedWorkflowIds, workflowSeed } from "./data/workflows.js";
 import { renderShell } from "./shared/shell.js";
 import {toggleSidebar} from './shared/sidebar.js';
@@ -7,7 +11,7 @@ import { loadEditor,loadExecutionEditor,renderEditor,mountEditor } from './featu
 import {loadEditor as loadEditorV1,renderEditor as renderEditorV1,mountEditor as mountEditorV1} from './features/editor-v1/workbench.js';
 import {loadPhysicalModel,savePhysicalModel} from './features/physical-model/model.js';
 import {renderPhysicalEditor,mountPhysicalEditor} from './features/physical-model/workbench.js';
-import { esc,reportConclusion } from './features/editor/model.js';
+import { esc,reportConclusion,invalidate,timeNow } from './features/editor/model.js';
 import {renderDispensingReport,mountDispensingReport} from './features/reports/dispensing-report.js';
 import {isAuthenticated,showLogin,logout} from './auth/auth.js';
 import {collectTasks} from './features/tasks/task-data.js';
@@ -82,13 +86,21 @@ function render() {
   const isTaskList=path==='/tasks'||path==='/multiscale/runs'&&!query.get('workflowId');
   const editMatch=path.match(/^\/multiscale\/workflows\/([^/]+)\/edit(?:\/materials\/([^/]+))?$/);
   const isV1=path==='/demo/workflow-editor-v1';
-  const source=isV1?'/src/styles/editor-v1-source.css':editMatch?(editMatch[2]?'/src/styles/physical-source.css':'/src/styles/editor-source.css'):path==='/multiscale/runs'&&!isTaskList?'/src/styles/editor-source.css':null;
+  const source=path.startsWith('/models/molecules/')?'/src/styles/editor-source.css':isV1?'/src/styles/editor-v1-source.css':editMatch?(editMatch[2]?'/src/styles/physical-source.css':'/src/styles/editor-source.css'):path==='/multiscale/runs'&&!isTaskList?'/src/styles/editor-source.css':null;
   let stylesheet=document.querySelector('#editor-styles');
   if(source){
     if(!stylesheet||stylesheet.dataset.source!==source){stylesheet?.remove();stylesheet=document.createElement('link');stylesheet.id='editor-styles';stylesheet.rel='stylesheet';stylesheet.href=source;stylesheet.dataset.source=source;stylesheet.onload=()=>{stylesheet.dataset.ready='true';render();};document.head.append(stylesheet);}
     if(stylesheet.dataset.ready!=='true'){app.innerHTML=renderShell('<main class="page-main">正在加载建模工作台…</main>');bindCommonState();return;}
   }else stylesheet?.remove();
-  if(isTaskList){app.innerHTML=renderShell(renderTaskManager(),'runs');disposeEditor=mountTaskManager(app.querySelector('.task-manager'),{getRecords:()=>collectTasks(state.workflows,loadEditor),view:taskManagementView,navigate,openDialog,notify});}
+  if(path.startsWith('/models/molecules/')){
+    const id=decodeURIComponent(path.slice('/models/molecules/'.length)),record=id==='new'?null:modelingRecords(state.workflows,loadEditor).molecular.find(r=>r.id===id),molecule=record?.molecule||createMolecule();
+    const savedModelId=record?.id||'molecule-'+Date.now();
+    if(id==='new')molecule.name='未命名分子模型';
+    app.innerHTML=renderShell(renderMolecularPage(molecule.name),'modeling');
+    disposeEditor=mountMolecularPage(app.querySelector('.molecular-page'),molecule,{navigate,openDialog,notify,modelId:savedModelId,onSave:m=>{if(!record||record.local){const rows=localMoleculeRecords(),item=rows.find(x=>x.id===savedModelId);if(item)Object.assign(item,{name:m.name,molecule:m,time:timeNow()});else rows.unshift({id:savedModelId,name:m.name,molecule:m,time:timeNow()});localStorage.setItem(moleculeRecordsKey,JSON.stringify(rows));}else{record.node.params.molecule=m;for(const macro of record.state.nodes.filter(n=>n.type==='macro'))for(const [materialId,microId]of Object.entries(macro.materialNodes||{}))if(microId===record.node.id){const structure=macro.params.materials?.find(x=>x.id===materialId);if(structure)structure.molecule=structuredClone(m);}invalidate(record.state,record.node.id);record.state.revision++;record.state.checkedRevision=null;localStorage.setItem('forge-editor-current:'+record.workflow.id,JSON.stringify(record.state));editorUpdate(record.state);}notify('分子建模记录已保存');}});
+  }
+  else if(path==='/models'){app.innerHTML=renderShell(renderModelingPage(state.workflows,loadEditor),'modeling');}
+  else if(isTaskList){app.innerHTML=renderShell(renderTaskManager(),'runs');disposeEditor=mountTaskManager(app.querySelector('.task-manager'),{getRecords:()=>collectTasks(state.workflows,loadEditor),view:taskManagementView,navigate,openDialog,notify});}
   else if(isV1){
     const workflow=state.workflows.find(w=>w.id===(query.get('workflowId')||'wf-tim-001'));
     if(!workflow){app.innerHTML=placeholderPage('edit',query.get('workflowId'));return;}
@@ -106,7 +118,7 @@ function render() {
       s.editorLayout='model-first';
       app.innerHTML=renderShell(renderEditor(s),'workflows',{workflowId:workflow.id});
       app.querySelector('.breadcrumbs').innerHTML='<span>跨尺度模拟</span>'+icon('chevron')+'<strong>'+esc(s.name)+'</strong>'+icon('chevron')+'<strong>'+(s.viewMode==='execution'?'执行任务':'编辑')+'</strong>';
-      disposeEditor=mountEditor(app.querySelector('.editor-page'),s,{notify,navigate,openDialog,onUpdate:editorUpdate});
+      disposeEditor=mountEditor(app.querySelector('.editor-page'),s,{notify,navigate,openDialog,onUpdate:editorUpdate,onCopy:copyModelFromEditor});
       bindCommonState();return;
     }
     const s=loadPhysicalModel(workflow),materialId=editMatch[2]?decodeURIComponent(editMatch[2]):null;
@@ -143,6 +155,8 @@ function closeMenus() {
 }
 
 app.addEventListener("input", (event) => {
+  if(event.target.matches('[data-model-search]')){const column=event.target.closest('.model-record-column'),query=event.target.value.trim().toLocaleLowerCase(),cards=[...column.querySelectorAll('.model-record-card')];let visible=0;for(const card of cards){card.hidden=!card.textContent.toLocaleLowerCase().includes(query);if(card.closest('.model-record-wrap'))card.closest('.model-record-wrap').hidden=card.hidden;if(!card.hidden)visible++;}const count=column.querySelector('header>div>span');if(count)count.textContent=String(visible);let empty=column.querySelector('[data-model-search-empty]');if(!empty){empty=document.createElement('p');empty.className='model-record-empty';empty.dataset.modelSearchEmpty='';empty.textContent='没有找到匹配的模型';column.querySelector('.model-record-list').append(empty);}empty.hidden=visible>0||!query;return;}
+
   const filter = event.target.dataset.filter;
   if (filter === "query") {
     state.filters.query = event.target.value;
@@ -164,15 +178,23 @@ app.addEventListener("change", (event) => {
 });
 
 app.addEventListener("click", (event) => {
+  const removeMolecule=event.target.closest('[data-delete-molecule]'),removeCross=event.target.closest('[data-delete-cross-model]');
+  if(removeMolecule||removeCross){event.preventDefault();event.stopPropagation();if(removeCross){const model=state.workflows.find(w=>w.id===removeCross.dataset.deleteCrossModel);if(model)openDialog(deleteWorkflowDialog(model));return;}const id=removeMolecule.dataset.deleteMolecule,record=modelingRecords(state.workflows,loadEditor).molecular.find(r=>r.id===id);if(!record)return;const d=openDialog(`<div class="dialog-form"><h2>删除分子模型</h2><p>确定删除“${esc(record.name)}”的建模记录？${record.workflow?'关联跨尺度建模使用的分子结构和已有任务快照会保留。':'已有计算任务快照会保留。'}</p><div class="dialog-actions"><button type="button" class="btn" data-dialog-close>取消</button><button type="button" class="btn danger-menu-item" data-confirm-delete-model>确认删除</button></div></div>`);d.querySelector('[data-confirm-delete-model]').onclick=()=>{deleteMolecularRecord(id);d.close();render();notify('分子模型记录已删除');};return;}
+
   if(event.target.closest('[data-demo-logout]')){logout();render();return;}
   const route=event.target.closest("a[data-route]");if(route&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey){event.preventDefault();return navigate(route.getAttribute("href"));}
   const returnButton=event.target.closest('[data-return-editor]');if(returnButton)return navigate(returnButton.dataset.returnEditor);
   const help = event.target.closest("[data-demo-help]");
   if (help) return notify("当前为交互原型，数据与计算结果均为演示内容。");
+  const newModel=event.target.closest('[data-model-new]');
+  if(newModel&&['tim','extrusion'].includes(newModel.dataset.modelNew)){const kind=newModel.dataset.modelNew,id='wf-demo-'+Date.now(),w={id,name:kind==='tim'?'未命名 TIM 建模':'未命名挤出建模',description:'',applicationType:kind,type:kind==='tim'?'TIM 导热':'挤出模拟',nodeCount:kind==='tim'?9:7,definitionStatus:'草稿',latestRun:null,updatedAt:timeNow()};state.workflows.push(w);saveCustomWorkflows(state.workflows);navigate('/multiscale/workflows/'+id+'/edit');return;}
+  if(newModel){if(newModel.dataset.modelNew==='choose'){const d=openDialog(`<div class="dialog-form"><h2>新建建模</h2><div class="model-create-shortcuts"><button data-create-molecular>${icon('molecule')}分子建模${icon('chevron')}</button><button data-create-multiscale>${icon('flow')}跨尺度建模${icon('chevron')}</button></div></div>`);d.querySelector('[data-create-molecular]').onclick=()=>{d.close();navigate('/models/molecules/new');};d.querySelector('[data-create-multiscale]').onclick=()=>{d.close();openDialog(newWorkflowDialog());};}else navigate('/models/molecules/new');return;}
+  const moleculeCard=event.target.closest('[data-model-molecule]');if(moleculeCard){navigate('/models/molecules/'+encodeURIComponent(moleculeCard.dataset.modelMolecule));return;}
   const nav = event.target.closest("[data-nav]");
   if (nav) {
     const target = nav.dataset.nav;
-    if (target === "workflows") navigate("/multiscale/workflows");
+    if(target === "modeling") navigate("/models");
+    else if (target === "workflows") navigate("/multiscale/workflows");
     else if (target === "runs") navigate("/tasks");
     else notify(`${nav.textContent.trim()}为系统已有功能，本轮不重建。`);
     return;
@@ -189,7 +211,7 @@ app.addEventListener("click", (event) => {
   const action = event.target.closest("[data-action]");
   if (!action) return;
   const item = state.workflows.find((workflow) => workflow.id === action.dataset.id);
-  if (action.dataset.action === "new") openDialog(newWorkflowDialog());
+  if (action.dataset.action === "new") {document.querySelector("dialog")?.close();openDialog(newWorkflowDialog());}
   if (action.dataset.action === "edit" && item) {
     if (item.latestRun?.status === "运行中") notify("正在运行的作业使用提交时快照；本次编辑只影响后续运行。");
     navigate(`/multiscale/workflows/${item.id}/edit`);
@@ -263,7 +285,7 @@ document.addEventListener("submit", (event) => {
     if (source) {
       const copy = { ...source, id: `wf-copy-${Date.now()}`, name, latestRun: null, definitionStatus: "草稿", updatedAt: now };
       state.workflows.push(copy);
-      try {const editor=loadEditor(source);localStorage.setItem(`forge-editor-current:${copy.id}`,JSON.stringify({...structuredClone(editor),workflowId:copy.id,name:copy.name,runs:[],history:[],messages:[],definition:'草稿',checkedRevision:null}));}catch{}
+      try {const editor=loadEditor(source);localStorage.setItem(`forge-editor-current:${copy.id}`,JSON.stringify({...structuredClone(editor),workflowId:copy.id,name:copy.name,runs:[],history:[],messages:[],definition:'草稿',checkedRevision:null,viewMode:'definition',activeRunId:null,nodes:editor.nodes.map(n=>({...structuredClone(n),status:'待校验'}))}));}catch{}
       try{const physical=structuredClone(loadPhysicalModel(source));physical.workflowId=copy.id;physical.name=copy.name;physical.history=[];physical.checkedRevision=null;savePhysicalModel(physical);}catch{}
       saveCustomWorkflows(state.workflows);
       document.querySelector("dialog")?.close();
@@ -277,3 +299,5 @@ window.addEventListener("popstate", render);
 window.addEventListener('forge:auth-expired',render);
 document.addEventListener('forge:run-progress',()=>{if(location.pathname==='/multiscale/runs')render();});
 render();
+
+function copyModelFromEditor(model){const source=state.workflows.find(w=>w.id===model.workflowId);if(!source)return;const id='wf-copy-'+Date.now(),name=model.name+' 副本',copy={...source,id,name,latestRun:null,definitionStatus:'草稿',updatedAt:timeNow()};const definition=structuredClone(model);Object.assign(definition,{workflowId:id,name,runs:[],history:[],messages:[],viewMode:'definition',checkedRevision:null,definition:'草稿'});delete definition.activeRunId;delete definition.factorTaskFilter;for(const n of definition.nodes)n.status='待校验';localStorage.setItem('forge-editor-current:'+id,JSON.stringify(definition));state.workflows.push(copy);saveCustomWorkflows(state.workflows);navigate('/multiscale/workflows/'+id+'/edit');notify('已复制建模与参数，新副本可重新提交计算');}
