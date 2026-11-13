@@ -13,7 +13,7 @@ export function renderShell(content, active = "workflows", options = {}) {
   const collapsed=sidebarCollapsed();
   return `
     <aside class="sidebar ${collapsed?'is-collapsed':'is-expanded'}" id="sidebar">
-      <a class="brand" href="/multiscale/workflows" data-route aria-label="SynMatAI 新研智材">
+      <a class="brand" href="/models" data-route aria-label="SynMatAI 新研智材">
         <img src="/assets/brand/synmatai-logo.png" alt="SynMatAI 新研智材" />
       </a>
       <div class="workspace-label">材料研发平台</div>

@@ -80,8 +80,11 @@ function placeholderPage(kind, workflowId, runId) {
 
 function render() {
   disposeEditor();disposeEditor=()=>{};
-  if(!isAuthenticated()){showLogin(app,render);return;}
+  if(!isAuthenticated()){showLogin(app,()=>{history.replaceState({},'', '/models');render();});return;}
   document.body.classList.remove('login-active');document.title='SynMatAI · 跨尺度模拟';
+  const requestedPath=location.pathname;
+  const knownPage=['/models','/tasks','/multiscale/workflows','/multiscale/runs','/demo/workflow-editor-v1'].includes(requestedPath)||/^\/models\/molecules\/[^/]+$/.test(requestedPath)||/^\/multiscale\/workflows\/[^/]+\/edit(?:\/materials\/[^/]+)?$/.test(requestedPath);
+  if(!knownPage)history.replaceState({},'', '/models');
   const path=location.pathname,query=new URLSearchParams(location.search);
   const isTaskList=path==='/tasks'||path==='/multiscale/runs'&&!query.get('workflowId');
   const editMatch=path.match(/^\/multiscale\/workflows\/([^/]+)\/edit(?:\/materials\/([^/]+))?$/);
